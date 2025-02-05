@@ -1,7 +1,6 @@
 package com.example.backend.domain.livro;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Livro {
     @Id
-    @GeneratedValue
     private UUID id;
     private String titulo;
     private String autor;

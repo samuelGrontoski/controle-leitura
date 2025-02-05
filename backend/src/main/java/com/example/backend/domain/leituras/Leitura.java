@@ -18,7 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Leitura {
     @Id
-    @GeneratedValue
     private UUID id;
     private Date data_inicio;
     private Date data_termino;

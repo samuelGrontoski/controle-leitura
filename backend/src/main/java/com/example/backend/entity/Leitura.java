@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Leitura {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)

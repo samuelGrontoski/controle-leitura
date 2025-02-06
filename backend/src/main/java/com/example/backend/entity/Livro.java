@@ -16,7 +16,7 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 public class Livro {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)

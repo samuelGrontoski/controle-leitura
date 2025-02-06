@@ -32,7 +32,6 @@ public class Leitura {
 
     @ManyToOne
     @JoinColumn(name = "livro_id")
-    @Column(nullable = false)
     private Livro livro;
 
     public Leitura(LeituraDTO leitura) {

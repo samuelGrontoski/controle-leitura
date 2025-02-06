@@ -1,14 +1,13 @@
-package com.example.backend.domain.livro;
+package com.example.backend.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Table(name = "livro")
 @Entity
@@ -18,7 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Livro {
     @Id
-    private UUID id;
+    @GeneratedValue
+    private Long id;
     private String titulo;
     private String autor;
     private String genero;

@@ -18,7 +18,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class Leitura {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leitura_seq")
+    @SequenceGenerator(name = "leitura_seq", sequenceName = "leitura_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)

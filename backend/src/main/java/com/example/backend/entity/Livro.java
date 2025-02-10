@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Objects;
+
 @Table(name = "livro")
 @Entity
 @Setter
@@ -16,7 +18,8 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 public class Livro {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "livro_seq")
+    @SequenceGenerator(name = "livro_seq", sequenceName = "livro_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
@@ -39,5 +42,17 @@ public class Livro {
 
     public Livro(LivroDTO livro) {
         BeanUtils.copyProperties(livro, this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Livro livro = (Livro) o;
+        return Objects.equals(id, livro.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

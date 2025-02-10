@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.LivroDTO;
 import com.example.backend.service.LivroService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class LivroController {
     }
 
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
         livroService.excluir(id);
+        return ResponseEntity.ok().build();
     }
 }

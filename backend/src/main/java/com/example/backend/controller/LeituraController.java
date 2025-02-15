@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/leitura")
-@CrossOrigin
+@RequestMapping(value = "/minhas_leituras")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LeituraController {
 
     @Autowired
@@ -26,8 +26,9 @@ public class LeituraController {
         leituraService.inserir(leitura);
     }
 
-    @PutMapping
-    public LeituraDTO alterar(@RequestBody LeituraDTO leitura) {
+    @PutMapping("/{id}")
+    public LeituraDTO alterar(@PathVariable("id") Long id, @RequestBody LeituraDTO leitura) {
+        leitura.setId(id);
         return leituraService.alterar(leitura);
     }
 

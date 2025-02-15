@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/livro")
-@CrossOrigin
+@RequestMapping(value = "/minha_estante")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LivroController {
 
     @Autowired
@@ -26,10 +26,12 @@ public class LivroController {
         livroService.inserir(livro);
     }
 
-    @PutMapping
-    public LivroDTO alterar(@RequestBody LivroDTO livro) {
+    @PutMapping("/{id}")
+    public LivroDTO alterar(@PathVariable("id") Long id, @RequestBody LivroDTO livro) {
+        livro.setId(id);
         return livroService.alterar(livro);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {

@@ -9,8 +9,9 @@ import { GiBookshelf } from "react-icons/gi";
 import { FaGithub } from "react-icons/fa";
 import { FaRegCopyright } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
+import { MdOutlineCancel } from "react-icons/md";
+import { FaRegSave } from "react-icons/fa";
 
 import { Projeto } from "../types/types";
 import { LeituraService } from '../service/LeituraService';
@@ -21,13 +22,35 @@ const LeituraCard = ({ leitura, onClick }: { leitura: Projeto.Leitura; onClick: 
         return null;
     }
 
+    const totalPaginas = leitura.livro.num_paginas;
+    const paginasLidas = leitura.pagina;
+    const progresso = Math.floor((paginasLidas / totalPaginas) * 100);
+
     return (
         <div
-            className="flex flex-col items-center p-4 cursor-pointer hover:bg-gray-100 rounded-lg transition-colors border-2 hover:shadow-lg hover:scale-110 duration-200"
+            className="flex flex-col items-center p-4 cursor-pointer hover:bg-gray-100 rounded-lg transition-colors border-2 border-foreground hover:shadow-lg hover:scale-110 duration-200 gap-2"
             onClick={onClick}
         >
             <h3 className="text-center font-semibold">{leitura.livro.titulo}</h3>
-            <p className="text-sm text-gray-600">Página: {leitura.pagina}</p>
+            <div className="mt-2 text-center w-full">
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                    <div
+                        className="h-2.5 rounded-full"
+                        style={{
+                            width: `${progresso}%`,
+                            backgroundColor: progresso === 100 ? '#10B981' : '#FBBF24',
+                        }}
+                    ></div>
+                </div>
+                <div className='flex justify-between'>
+                    <p className={`text-sm font-semibold ${progresso === 100 ? 'text-green-500' : 'text-yellow-500'}`}>
+                        {progresso}%
+                    </p>
+                    <p className="text-sm text-gray-600">
+                        {paginasLidas} de {totalPaginas}
+                    </p>
+                </div>
+            </div>
             <p className="text-sm text-gray-600">Início: {new Date(leitura.data_inicio).toLocaleDateString()}</p>
             <p className="text-sm text-gray-600">Término: {new Date(leitura.data_termino).toLocaleDateString()}</p>
         </div>
@@ -127,6 +150,11 @@ export function Minhas_Leituras() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (formData.pagina > formData.livro.num_paginas) {
+            alert("O número de páginas lidas não pode ser maior que o número total de páginas do livro.");
+            return;
+        }
+
         leituraService.inserir(formData)
             .then((response) => {
                 setLeituras([...leituras, response.data]);
@@ -210,6 +238,11 @@ export function Minhas_Leituras() {
     const handleSubmitEditar = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (formDataEditar.pagina > formDataEditar.livro.num_paginas) {
+            alert("O número de páginas lidas não pode ser maior que o número total de páginas do livro.");
+            return;
+        }
+
         leituraService.alterar(formDataEditar)
             .then(() => {
                 setLeituras(leituras.map(leitura => leitura.id === formDataEditar.id ? formDataEditar : leitura));
@@ -255,14 +288,14 @@ export function Minhas_Leituras() {
                 <div style={{ marginLeft: 'auto' }}>
                     <button
                         onClick={handleAbrirNovaLeitura}
-                        className="mr-8 px-4 py-2 bg-green-500 text-foreground rounded-md font-bold hover:shadow-lg hover:scale-110 duration-200"
+                        className="mr-8 px-4 py-2 bg-aurora text-foreground rounded-md font-bold hover:shadow-lg hover:scale-110 duration-200"
                     >
                         Adicionar Leitura
                     </button>
                 </div>
             </header>
             <main className="flex p-20">
-                <div className="flex flex-wrap gap-4">
+                <div className="grid grid-cols-8 gap-4 w-full">
                     {leituras.map((leitura) => (
                         <LeituraCard
                             key={leitura.id}
@@ -306,67 +339,68 @@ export function Minhas_Leituras() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
-                        <p className='font-bold text-xl text-center'>Adicionar nova leitura</p>
+                    }} className='text-background bg-foreground'>
+                        <p className='text-gray-400 font-bold text-xl text-center'>Adicionar nova leitura</p>
                         <form onSubmit={handleSubmit}>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Data de Início: </label>
-                                <input
-                                    type="date"
-                                    name="data_inicio"
-                                    value={formData.data_inicio.toISOString().split('T')[0]}
-                                    onChange={handleInputChange}
+                                <label className='text-gray-400 font-bold'>Livro: </label>
+                                <select
+                                    name="livro"
+                                    value={formData.livro.id}
+                                    onChange={handleLivroChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                />
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                >
+                                    <option value="">Selecione o livro</option>
+                                    {livros.map((livro) => (
+                                        <option key={livro.id} value={livro.id}>{livro.titulo}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Data de Término: </label>
-                                <input
-                                    type="date"
-                                    name="data_termino"
-                                    value={formData.data_termino.toISOString().split('T')[0]}
-                                    onChange={handleInputChange}
-                                    required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                />
-                            </div>
-                            <div className='mb-3'>
-                                <label className='text-gray-700'>Página: </label>
+                                <label className='text-gray-400 font-bold'>Página: </label>
                                 <input
                                     type="number"
                                     name="pagina"
                                     value={formData.pagina}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Livro: </label>
-                                <select
-                                    name="livro"
-                                    value={formData.livro.id}
-                                    onChange={handleLivroChange}
+                                <label className='text-gray-400 font-bold'>Data de Início: </label>
+                                <input
+                                    type="date"
+                                    name="data_inicio"
+                                    value={formData.data_inicio.toISOString().split('T')[0]}
+                                    onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                >
-                                    <option value="">Selecione um livro</option>
-                                    {livros.map((livro) => (
-                                        <option key={livro.id} value={livro.id}>{livro.titulo}</option>
-                                    ))}
-                                </select>
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                />
+                            </div>
+                            <div className='mb-3'>
+                                <label className='text-gray-400 font-bold'>Data de Término: </label>
+                                <input
+                                    type="date"
+                                    name="data_termino"
+                                    value={formData.data_termino.toISOString().split('T')[0]}
+                                    onChange={handleInputChange}
+                                    required
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <button type="submit" className='px-3 py-1 bg-green-500 text-background rounded-md'>
+                                <button type="submit" className='px-3 py-1 bg-blue-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <FaRegSave />
                                     Salvar
                                 </button>
-                                <button type="button" onClick={handleFecharNovaLeitura} className='px-3 py-1 bg-red-500 text-background rounded-md'>
+                                <button type="button" onClick={handleFecharNovaLeitura} className='px-3 py-1 bg-red-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <MdOutlineCancel />
                                     Cancelar
                                 </button>
                             </div>
@@ -388,44 +422,53 @@ export function Minhas_Leituras() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
+                    }} className='text-background bg-foreground'>
                         <div className='flex justify-end'>
                             <button
                                 type="button"
                                 onClick={handleFecharDetalhesLeitura}
-                                className='px-3 py-1 bg-red-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
+                                className='px-3 py-1 bg-aurora text-foreground font-bold rounded-md inline-flex items-center gap-1'
                             >
-                                <IoMdClose />
+                                <MdOutlineCancel />
                                 Fechar
                             </button>
                         </div>
-                        <p className='font-bold text-xl text-center'>Detalhes da Leitura</p>
-                        <div className='mb-3'>
-                            <label className='text-gray-700'>Livro: </label>
-                            <p>{leituraSelecionada.livro.titulo}</p>
+                        <div className='my-3 flex justify-center'>
+                            <img src={leituraSelecionada.livro.capa_url} alt={leituraSelecionada.livro.titulo} className="w-32 h-48 object-cover rounded-md" />
                         </div>
-                        <div className='mb-3'>
-                            <label className='text-gray-700'>Página: </label>
-                            <p>{leituraSelecionada.pagina}</p>
+                        <p className='font-bold text-xl text-center mb-4'>{leituraSelecionada.livro.titulo}</p>
+                        <div className="w-full">
+                            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                <div
+                                    className="h-2.5 rounded-full"
+                                    style={{
+                                        width: `${Math.floor((leituraSelecionada.pagina / leituraSelecionada.livro.num_paginas) * 100)}%`,
+                                        backgroundColor: Math.floor((leituraSelecionada.pagina / leituraSelecionada.livro.num_paginas) * 100) === 100 ? '#10B981' : '#FBBF24',
+                                    }}
+                                ></div>
+                            </div>
+                            <div className='flex justify-between mt-2'>
+                                <p className={`text-sm font-semibold ${Math.floor((leituraSelecionada.pagina / leituraSelecionada.livro.num_paginas) * 100) === 100 ? 'text-green-500' : 'text-yellow-500'}`}>
+                                    {Math.floor((leituraSelecionada.pagina / leituraSelecionada.livro.num_paginas) * 100)}%
+                                </p>
+                                <p className="text-sm text-gray-400 font-bold">
+                                    {leituraSelecionada.pagina} de {leituraSelecionada.livro.num_paginas}
+                                </p>
+                            </div>
                         </div>
-                        <div className='mb-3'>
-                            <label className='text-gray-700'>Data de Início: </label>
-                            <p>{new Date(leituraSelecionada.data_inicio).toLocaleDateString()}</p>
+                        <div className='mt-4'>
+                            <p className="text-sm text-gray-400 font-bold">Início: {new Date(leituraSelecionada.data_inicio).toLocaleDateString()}</p>
+                            <p className="text-sm text-gray-400 font-bold">Término: {new Date(leituraSelecionada.data_termino).toLocaleDateString()}</p>
                         </div>
-                        <div className='mb-3'>
-                            <label className='text-gray-700'>Data de Término: </label>
-                            <p>{new Date(leituraSelecionada.data_termino).toLocaleDateString()}</p>
-                        </div>
-                        <div className='flex justify-between'>
+                        <div className='flex justify-between mt-6'>
                             <button
                                 type="button"
                                 onClick={() => handleAbrirEditarLeitura(leituraSelecionada)}
-                                className='px-3 py-1 bg-green-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
+                                className='px-3 py-1 bg-blue-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
                             >
                                 <CiEdit />
                                 Editar
@@ -456,55 +499,21 @@ export function Minhas_Leituras() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
-                        <p className='font-bold text-xl text-center'>Editar Leitura</p>
+                    }} className='text-background bg-foreground'>
+                        <p className='text-gray-400 font-bold text-xl text-center'>Editar Leitura</p>
                         <form onSubmit={handleSubmitEditar}>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Data de Início: </label>
-                                <input
-                                    type="date"
-                                    name="data_inicio"
-                                    value={formDataEditar.data_inicio.toISOString().split('T')[0]}
-                                    onChange={handleInputChangeEditar}
-                                    required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                />
-                            </div>
-                            <div className='mb-3'>
-                                <label className='text-gray-700'>Data de Término: </label>
-                                <input
-                                    type="date"
-                                    name="data_termino"
-                                    value={formDataEditar.data_termino.toISOString().split('T')[0]}
-                                    onChange={handleInputChangeEditar}
-                                    required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                />
-                            </div>
-                            <div className='mb-3'>
-                                <label className='text-gray-700'>Página: </label>
-                                <input
-                                    type="number"
-                                    name="pagina"
-                                    value={formDataEditar.pagina}
-                                    onChange={handleInputChangeEditar}
-                                    required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
-                                />
-                            </div>
-                            <div className='mb-3'>
-                                <label className='text-gray-700'>Livro: </label>
+                                <label className='text-gray-400 font-bold'>Livro: </label>
                                 <select
                                     name="livro"
                                     value={formDataEditar.livro.id}
                                     onChange={handleLivroChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 >
                                     <option value="">Selecione um livro</option>
                                     {livros.map((livro) => (
@@ -512,11 +521,46 @@ export function Minhas_Leituras() {
                                     ))}
                                 </select>
                             </div>
+                            <div className='mb-3'>
+                                <label className='text-gray-400 font-bold'>Página: </label>
+                                <input
+                                    type="number"
+                                    name="pagina"
+                                    value={formDataEditar.pagina}
+                                    onChange={handleInputChangeEditar}
+                                    required
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                />
+                            </div>
+                            <div className='mb-3'>
+                                <label className='text-gray-400 font-bold'>Data de Início: </label>
+                                <input
+                                    type="date"
+                                    name="data_inicio"
+                                    value={formDataEditar.data_inicio.toISOString().split('T')[0]}
+                                    onChange={handleInputChangeEditar}
+                                    required
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                />
+                            </div>
+                            <div className='mb-3'>
+                                <label className='text-gray-400 font-bold'>Data de Término: </label>
+                                <input
+                                    type="date"
+                                    name="data_termino"
+                                    value={formDataEditar.data_termino.toISOString().split('T')[0]}
+                                    onChange={handleInputChangeEditar}
+                                    required
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
+                                />
+                            </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <button type="submit" className='px-3 py-1 bg-blue-500 text-background rounded-md'>
+                                <button type="submit" className='px-3 py-1 bg-blue-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'>
+                                    <FaRegSave />
                                     Salvar
                                 </button>
-                                <button type="button" onClick={handleFecharEditarLeitura} className='px-3 py-1 bg-red-500 text-background rounded-md'>
+                                <button type="button" onClick={handleFecharEditarLeitura} className='px-3 py-1 bg-red-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'>
+                                    <MdOutlineCancel />
                                     Cancelar
                                 </button>
                             </div>

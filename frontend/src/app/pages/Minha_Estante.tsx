@@ -11,15 +11,16 @@ import { FaRegCopyright } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
+import { MdOutlineCancel } from "react-icons/md";
+import { FaRegSave } from "react-icons/fa";
 
-import logo from '../assets/logo.png';
 import { Projeto } from "../types/types";
 import { LivroService } from '../service/LivroService';
 
 const LivroCard = ({ livro, onClick }: { livro: Projeto.Livro; onClick: () => void }) => {
     return (
         <div
-            className="flex flex-col items-center p-4 cursor-pointer hover:bg-gray-100 rounded-lg transition-colors hover:shadow-lg hover:scale-110 duration-200"
+            className="flex flex-col items-center p-4 cursor-pointer hover:bg-gray-100 rounded-lg border-2 border-foreground transition-colors hover:shadow-lg hover:scale-110 duration-200"
             onClick={onClick}
         >
             <img src={livro.capa_url} alt={livro.titulo} className="w-32 h-48 object-cover rounded-md" />
@@ -182,14 +183,14 @@ export function Minha_Estante() {
                 <div style={{ marginLeft: 'auto' }}>
                     <button
                         onClick={handleAbrirNovoLivro}
-                        className="mr-8 px-4 py-2 bg-green-500 text-foreground rounded-md font-bold hover:shadow-lg hover:scale-110 duration-200"
+                        className="mr-8 px-4 py-2 bg-aurora text-foreground rounded-md font-bold hover:shadow-lg hover:scale-110 duration-200"
                     >
                         Adicionar Livro
                     </button>
                 </div>
             </header>
             <main className="flex p-20">
-                <div className="flex flex-wrap gap-4">
+                <div className="grid grid-cols-8 gap-4 w-full">
                     {livros.map((livro) => (
                         <LivroCard
                             key={livro.id}
@@ -233,85 +234,86 @@ export function Minha_Estante() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
-                        <p className='font-bold text-xl text-center'>Adicionar novo livro</p>
+                    }} className='text-background bg-foreground'>
+                        <p className='font-bold text-gray-400 text-xl text-center my-4'>Adicionar novo livro</p>
                         <form onSubmit={handleSubmit}>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Título: </label>
+                                <label className='font-bold text-gray-400'>Título: </label>
                                 <input
                                     type="text"
                                     name="titulo"
                                     value={formData.titulo}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Autor: </label>
+                                <label className='font-bold text-gray-400'>Autor: </label>
                                 <input
                                     type="text"
                                     name="autor"
                                     value={formData.autor}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Gênero: </label>
+                                <label className='font-bold text-gray-400'>Gênero: </label>
                                 <input
                                     type="text"
                                     name="genero"
                                     value={formData.genero}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Número de Páginas: </label>
+                                <label className='font-bold text-gray-400'>Número de Páginas: </label>
                                 <input
                                     type="number"
                                     name="num_paginas"
                                     value={formData.num_paginas}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Ano de Publicação: </label>
+                                <label className='font-bold text-gray-400'>Ano de Publicação: </label>
                                 <input
                                     type="number"
                                     name="ano_publicacao"
                                     value={formData.ano_publicacao}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>URL da Capa: </label>
+                                <label className='font-bold text-gray-400'>URL da Capa: </label>
                                 <input
                                     type="url"
                                     name="capa_url"
                                     value={formData.capa_url}
                                     onChange={handleInputChange}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <button type="submit" className='px-3 py-1 bg-green-500 text-background rounded-md'>
+                                <button type="submit" className='px-3 py-1 bg-blue-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <FaRegSave />
                                     Salvar
                                 </button>
-                                <button type="button" onClick={handleFecharNovoLivro} className='px-3 py-1 bg-red-500 text-background rounded-md'>
+                                <button type="button" onClick={handleFecharNovoLivro} className='px-3 py-1 bg-red-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <MdOutlineCancel />
                                     Cancelar
                                 </button>
                             </div>
@@ -333,23 +335,22 @@ export function Minha_Estante() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
+                    }} className='text-background bg-foreground'>
                         <div className='flex justify-end'>
                             <button
                                 type="button"
                                 onClick={handleFecharDetalhesLivro}
-                                className='px-3 py-1 bg-red-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
+                                className='px-3 py-1 bg-aurora text-foreground font-bold rounded-md inline-flex items-center gap-1'
                             >
                                 <IoMdClose />
                                 Fechar
                             </button>
                         </div>
-                        <p className='font-bold text-xl text-center'>Detalhes do Livro</p>
+                        <p className='text-gray-400 font-bold text-xl text-center mt-2'>Detalhes do Livro</p>
                         <div className='my-3 flex justify-center'>
                             <img src={livroSelecionado.capa_url} alt={livroSelecionado.titulo} className="w-32 h-48 object-cover rounded-md" />
                         </div>
@@ -357,26 +358,26 @@ export function Minha_Estante() {
                             <p className='text-center font-bold'>{livroSelecionado.titulo}</p>
                         </div>
                         <div className='mb-3'>
-                            <label className='text-gray-700'>Autor: </label>
+                            <label className='text-gray-400 font-bold'>Autor: </label>
                             <p>{livroSelecionado.autor}</p>
                         </div>
                         <div className='mb-3'>
-                            <label className='text-gray-700'>Gênero: </label>
+                            <label className='text-gray-400 font-bold'>Gênero: </label>
                             <p>{livroSelecionado.genero}</p>
                         </div>
                         <div className='mb-3'>
-                            <label className='text-gray-700'>Número de Páginas: </label>
+                            <label className='text-gray-400 font-bold'>Número de Páginas: </label>
                             <p>{livroSelecionado.num_paginas}</p>
                         </div>
                         <div className='mb-3'>
-                            <label className='text-gray-700'>Ano de Publicação: </label>
+                            <label className='text-gray-400 font-bold'>Ano de Publicação: </label>
                             <p>{livroSelecionado.ano_publicacao}</p>
                         </div>
                         <div className='flex justify-between'>
                             <button
                                 type="button"
                                 onClick={() => handleAbrirEditarLivro(livroSelecionado)}
-                                className='px-3 py-1 bg-green-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
+                                className='px-3 py-1 bg-blue-500 text-foreground font-bold rounded-md inline-flex items-center gap-1'
                             >
                                 <CiEdit />
                                 Editar
@@ -407,85 +408,86 @@ export function Minha_Estante() {
                     alignItems: 'center',
                 }}>
                     <div style={{
-                        backgroundColor: '#f3f3f3',
                         padding: '20px',
                         borderRadius: '8px',
                         textAlign: 'start',
                         width: '400px',
-                    }}>
+                    }} className='text-background bg-foreground'>
                         <p className='font-bold text-xl text-center'>Editar Livro</p>
                         <form onSubmit={handleSubmitEditar}>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Título: </label>
+                                <label className='text-gray-400 font-bold'>Título: </label>
                                 <input
                                     type="text"
                                     name="titulo"
                                     value={formDataEditar.titulo}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Autor: </label>
+                                <label className='text-gray-400 font-bold'>Autor: </label>
                                 <input
                                     type="text"
                                     name="autor"
                                     value={formDataEditar.autor}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Gênero: </label>
+                                <label className='text-gray-400 font-bold'>Gênero: </label>
                                 <input
                                     type="text"
                                     name="genero"
                                     value={formDataEditar.genero}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Número de Páginas: </label>
+                                <label className='text-gray-400 font-bold'>Número de Páginas: </label>
                                 <input
                                     type="number"
                                     name="num_paginas"
                                     value={formDataEditar.num_paginas}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>Ano de Publicação: </label>
+                                <label className='text-gray-400 font-bold'>Ano de Publicação: </label>
                                 <input
                                     type="number"
                                     name="ano_publicacao"
                                     value={formDataEditar.ano_publicacao}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div className='mb-3'>
-                                <label className='text-gray-700'>URL da Capa: </label>
+                                <label className='text-gray-400 font-bold'>URL da Capa: </label>
                                 <input
                                     type="url"
                                     name="capa_url"
                                     value={formDataEditar.capa_url}
                                     onChange={handleInputChangeEditar}
                                     required
-                                    className='w-full p-1 border-2 border-gray-300 rounded-md'
+                                    className='w-full p-1 border-2 border-gray-300 rounded-md text-foreground'
                                 />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <button type="submit" className='px-3 py-1 bg-blue-500 text-background rounded-md'>
+                                <button type="submit" className='px-3 py-1 bg-blue-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <FaRegSave />
                                     Salvar
                                 </button>
-                                <button type="button" onClick={handleFecharEditarLivro} className='px-3 py-1 bg-red-500 text-background rounded-md'>
+                                <button type="button" onClick={handleFecharEditarLivro} className='px-3 py-1 bg-red-500 text-background rounded-md inline-flex items-center gap-1'>
+                                    <MdOutlineCancel />
                                     Cancelar
                                 </button>
                             </div>
